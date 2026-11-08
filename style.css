@@ -772,57 +772,92 @@ button:hover {
         padding: 12px;
     }
 }
-/* スマホ版：出走表 */
+/* =========================
+   スマホ版：出走表
+========================= */
+
 @media screen and (max-width: 600px) {
 
+    /* 出走馬1頭分 */
     .horse {
-        display: grid;
-        grid-template-columns: 30px 30px minmax(0, 1fr) auto;
-        gap: 6px;
+        display: grid !important;
+
+        grid-template-columns:
+            28px
+            30px
+            minmax(0, 1fr)
+            75px;
+
+        gap: 5px;
+
         align-items: center;
+
         width: 100%;
+        min-width: 0;
+
         padding: 10px 6px;
     }
 
+    /* 枠番 */
     .horse-frame {
         width: 28px;
-        text-align: center;
+        min-width: 28px;
+        height: 28px;
+
         font-size: 13px;
+        margin: 0;
     }
 
+    /* 馬番 */
     .horse-number {
         width: 30px;
-        text-align: center;
+        min-width: 30px;
+
         font-size: 16px;
+        padding: 0;
     }
 
+    /* 馬名・脚質・馬場適性 */
     .horse-name {
         min-width: 0;
-        font-size: 14px;
+        width: 100%;
+
+        font-size: 13px;
         overflow-wrap: anywhere;
     }
 
     .horse-name .horse-info {
-        font-size: 11px;
-        margin-top: 3px;
+        font-size: 10px;
+        text-align: left;
+
+        margin-top: 4px;
+        white-space: normal;
     }
 
-    /* 人気・オッズ */
+    /* 人気・単勝オッズ */
     .horse > .horse-info {
+        width: 75px;
+        min-width: 0;
+
         font-size: 11px;
         text-align: right;
+
         white-space: nowrap;
     }
 
     .odds {
         font-size: 12px;
-        font-weight: bold;
+        margin-top: 4px;
     }
 
-    /* 距離適性は次の行に表示 */
+    /* 距離適性 */
     .horse-distance {
         grid-column: 3 / 5;
-        font-size: 11px;
+
         margin-top: 2px;
+        padding: 5px;
+
+        font-size: 10px;
+        text-align: left;
     }
 }
