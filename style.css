@@ -774,3 +774,35 @@ button:hover {
         height: 350px;
     }
 }
+/* スマホ表示の強制調整 */
+@media screen and (max-width: 600px) {
+    #bet-horse-inputs {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .bet-choice-group {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .bet-choice-list {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .bet-choice-list label {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        overflow-wrap: anywhere;
+    }
+
+    .bet-panel {
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+    }
+}
