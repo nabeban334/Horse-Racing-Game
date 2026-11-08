@@ -710,77 +710,15 @@ button:hover {
     font-weight: bold;
 }
 
+
 /* =========================
-   スマホ対応
+   スマホ表示の調整
 ========================= */
 
-@media (max-width: 600px) {
-
-    /* 馬番選択欄を2列にする */
-    .bet-choice-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        width: 100%;
-    }
-
-    /* 馬番の選択カード */
-    .bet-choice-list label {
-        min-width: 0;
-        width: 100%;
-        padding: 10px 8px;
-        gap: 6px;
-        justify-content: center;
-    }
-
-    /* チェックボックス */
-    .bet-choice-list input[type="checkbox"] {
-        width: 22px;
-        height: 22px;
-        flex-shrink: 0;
-    }
-
-    /* 購入画面全体 */
-    main {
-        width: 100%;
-        padding: 0 12px;
-    }
-
-    .bet-panel {
-        padding: 15px;
-        min-width: 0;
-    }
-
-    /* ステータス表示 */
-    .status-panel {
-        gap: 5px;
-        padding: 12px 5px;
-    }
-
-    .status-panel h2 {
-        font-size: 18px;
-    }
-
-    /* 最終結果 */
-    .final-summary {
-        grid-template-columns: 1fr;
-    }
-
-    /* レース情報 */
-    .race-animation-info {
-        font-size: 14px;
-    }
-
-    #race-track {
-        height: 350px;
-    }
-}
-/* スマホ表示の強制調整 */
 @media screen and (max-width: 600px) {
-    #bet-horse-inputs {
-        width: 100%;
-        min-width: 0;
-    }
 
+    .bet-panel,
+    #bet-horse-inputs,
     .bet-choice-group {
         width: 100%;
         min-width: 0;
@@ -794,15 +732,43 @@ button:hover {
     }
 
     .bet-choice-list label {
-        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
         min-width: 0;
-        box-sizing: border-box;
-        overflow-wrap: anywhere;
+        width: 100%;
+        padding: 8px 5px;
+        gap: 5px;
+        overflow: hidden;
+    }
+
+    .bet-choice-list input[type="checkbox"],
+    .bet-choice-list input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        margin: 0;
+    }
+
+    .bet-choice-odds {
+        margin-left: auto;
+        font-size: 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .bet-choice-list label span {
+        min-width: 0;
+        white-space: nowrap;
+    }
+
+    main {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 10px;
     }
 
     .bet-panel {
-        width: 100%;
-        min-width: 0;
-        overflow: hidden;
+        padding: 12px;
     }
 }
