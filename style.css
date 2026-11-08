@@ -861,3 +861,52 @@ button:hover {
         text-align: left;
     }
 }
+/* ながしの馬券選択欄：スマホ対応 */
+@media screen and (max-width: 600px) {
+
+    /* ながしの各選択欄 */
+    #bet-horse-inputs .bet-choice-group {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* 馬番とオッズを2列で配置 */
+    #bet-horse-inputs .bet-choice-list {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px;
+    }
+
+    /* 選択肢 */
+    #bet-horse-inputs .bet-choice-list label {
+        display: grid;
+        grid-template-columns: 20px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 5px;
+
+        min-width: 0;
+        padding: 9px 6px;
+        overflow: visible;
+    }
+
+    /* チェックボックス */
+    #bet-horse-inputs .bet-choice-list input {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+    }
+
+    /* 馬番 */
+    #bet-horse-inputs .bet-choice-list label span:not(.bet-choice-odds) {
+        white-space: nowrap;
+        font-size: 13px;
+    }
+
+    /* オッズ */
+    #bet-horse-inputs .bet-choice-odds {
+        margin-left: 0;
+        font-size: 12px;
+        white-space: nowrap;
+        color: #e53935;
+    }
+}
