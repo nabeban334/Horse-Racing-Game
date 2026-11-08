@@ -1696,6 +1696,7 @@ function startRace() {
     startRaceAnimation(results);
 }
 
+
 // レースアニメーションを開始する
 function startRaceAnimation(results) {
     const container =
@@ -1705,100 +1706,124 @@ function startRaceAnimation(results) {
         document.getElementById("animation-ranking");
 
     container.innerHTML = "";
+
     // 芝・ダートに応じて地面の色を変更
     const race = raceSchedule[currentRace - 1];
     const track = document.getElementById("race-track");
+
     if (race.ground === "ダート") {
         track.style.background = `
-        repeating-linear-gradient(
-            to bottom,
-            #b58b59 0px,
-            #b58b59 35px,
-            #a47a4c 35px,
-            #a47a4c 70px
-        )
-    `;
+            repeating-linear-gradient(
+                to bottom,
+                #b58b59 0px,
+                #b58b59 35px,
+                #a47a4c 35px,
+                #a47a4c 70px
+            )
+        `;
     } else {
         track.style.background = `
-        repeating-linear-gradient(
-            to bottom,
-            #278b43 0px,
-            #278b43 35px,
-            #217b3a 35px,
-            #217b3a 70px
-        )
-    `;
+            repeating-linear-gradient(
+                to bottom,
+                #278b43 0px,
+                #278b43 35px,
+                #217b3a 35px,
+                #217b3a 70px
+            )
+        `;
     }
+
     ranking.textContent = "レース開始！";
 
     const duration = 18000;
     const startTime = performance.now();
-    
+
     // レース結果へ進むボタン
     const skipButton =
-    document.getElementById("skip-race-button");
-    
+        document.getElementById("skip-race-button");
+
     let animationFinished = false;
+
     skipButton.onclick = function() {
         if (animationFinished) return;
-        
+
         animationFinished = true;
         finishRaceAnimation(results);
     };
 
     // 馬ごとのアニメーション情報
-    const animationHorses = currentHorses.map((horse, index) => {
+    const animationHorses = currentHorses.map(
+        (horse, index) => {
 
-        const resultIndex = results.findIndex(
-            result => result.number === horse.number
-        );
+            const resultIndex = results.findIndex(
+                result => result.number === horse.number
+            );
 
-        const element = document.createElement("div");
-        element.className = "animated-horse";
+            const element = document.createElement("div");
+            element.className = "animated-horse";
 
-        const frameColors = {
-            1: ["#FFFFFF", "#222222"],
-            2: ["#222222", "#FFFFFF"],
-            3: ["#E53935", "#FFFFFF"],
-            4: ["#2196F3", "#FFFFFF"],
-            5: ["#FDD835", "#222222"],
-            6: ["#2E9D50", "#FFFFFF"],
-            7: ["#F28C28", "#FFFFFF"],
-            8: ["#F48FB1", "#222222"]
-        };
+            // 馬の表示幅を固定
+            element.style.width = "70px";
 
-const [backgroundColor, textColor] =
-    frameColors[horse.frame] || frameColors[1];
+            const frameColors = {
+                1: ["#FFFFFF", "#222222"],
+                2: ["#222222", "#FFFFFF"],
+                3: ["#E53935", "#FFFFFF"],
+                4: ["#2196F3", "#FFFFFF"],
+                5: ["#FDD835", "#222222"],
+                6: ["#2E9D50", "#FFFFFF"],
+                7: ["#F28C28", "#222222"],
+                8: ["#F48FB1", "#222222"]
+            };
 
-element.innerHTML = `
-    <span class="horse-number"
-        style="background:${backgroundColor}; color:${textColor};">
-        ${horse.number}
-    </span>
-    <span class="horse-icon">🐎</span>
-`;
+            const [backgroundColor, textColor] =
+                frameColors[horse.frame] || frameColors[1];
 
-        // 18頭を縦に並べる
-        element.style.top =
-            `${index * (420 / currentHorses.length)}px`;
+            element.innerHTML = `
+                <span class="horse-number"
+                    style="background:${backgroundColor}; color:${textColor};">
+                    ${horse.number}
+                </span>
+                <span class="horse-icon">🐎</span>
+            `;
 
-        container.appendChild(element);
+            container.appendChild(element);
 
-        // 着順に応じたゴール時間
-        const finishTime =
-            15800 + resultIndex * 120;
+            // 競馬場の高さに合わせて縦位置を決める
+            const trackHeight = container.clientHeight;
+            const horseHeight = element.offsetHeight || 25;
 
-        return {
-            horse: horse,
-            element: element,
-            resultIndex: resultIndex,
-            finishTime: finishTime
-        };
-    });
+            const availableHeight =
+                Math.max(0, trackHeight - horseHeight);
+
+            const topPosition =
+                currentHorses.length <= 1
+                    ? 0
+                    : index * availableHeight /
+                        (currentHorses.length - 1);
+
+            element.style.top = `${topPosition}px`;
+
+            // 着順に応じたゴール時間
+            const finishTime =
+                15800 + resultIndex * 120;
+
+            return {
+                horse: horse,
+                element: element,
+                resultIndex: resultIndex,
+                finishTime: finishTime
+            };
+        }
+    );
 
     // アニメーションを更新
     function animate(now) {
-        const elapsed = Math.min(now - startTime, duration);
+
+        const elapsed = Math.min(
+            now - startTime,
+            duration
+        );
 
         const progress = elapsed / duration;
 
@@ -1816,32 +1841,56 @@ element.innerHTML = `
             let styleBonus = 0;
 
             if (horse.style === "逃げ") {
-                styleBonus = 0.07 * Math.sin(Math.PI * progress);
+                styleBonus =
+                    0.07 * Math.sin(Math.PI * progress);
+
             } else if (horse.style === "先行") {
-                styleBonus = 0.035 * Math.sin(Math.PI * progress);
+                styleBonus =
+                    0.035 * Math.sin(Math.PI * progress);
+
             } else if (horse.style === "差し") {
-                styleBonus = 0.035 * Math.sin(Math.PI * progress)
+                styleBonus =
+                    0.035 * Math.sin(Math.PI * progress)
                     * (2 * progress - 0.5);
+
             } else if (horse.style === "追込") {
-                styleBonus = 0.07 * Math.sin(Math.PI * progress)
+                styleBonus =
+                    0.07 * Math.sin(Math.PI * progress)
                     * (2 * progress - 1);
             }
 
-            p = Math.max(0, Math.min(1, p + styleBonus));
+            p = Math.max(
+                0,
+                Math.min(1, p + styleBonus)
+            );
 
-            // 左から右へ移動
-            const position = 2 + p * 88;
+            // 馬の幅を考慮して横位置を計算
+            const trackWidth = container.clientWidth;
+            const horseWidth = item.element.offsetWidth;
 
-            item.element.style.left = `${position}%`;
+            const maxLeft = Math.max(
+                0,
+                trackWidth - horseWidth
+            );
+
+            const position =
+                2 + p * Math.max(0, maxLeft - 2);
+
+            item.element.style.left = `${position}px`;
         });
 
         // 現在の位置順に並べる
-        const liveRanking = [...animationHorses].sort((a, b) => {
-            const aPosition = parseFloat(a.element.style.left);
-            const bPosition = parseFloat(b.element.style.left);
+        const liveRanking = [...animationHorses].sort(
+            (a, b) => {
+                const aPosition =
+                    parseFloat(a.element.style.left);
 
-            return bPosition - aPosition;
-        });
+                const bPosition =
+                    parseFloat(b.element.style.left);
+
+                return bPosition - aPosition;
+            }
+        );
 
         ranking.textContent =
             "現在の先頭集団：" +
@@ -1852,16 +1901,18 @@ element.innerHTML = `
                 .join("　");
 
         // 18秒経過したら終了
-       if (elapsed < duration && !animationFinished) {
-        requestAnimationFrame(animate);
-    } else if (!animationFinished) {
-        animationFinished = true;
-        finishRaceAnimation(results);
-    }
+        if (elapsed < duration && !animationFinished) {
+            requestAnimationFrame(animate);
+
+        } else if (!animationFinished) {
+            animationFinished = true;
+            finishRaceAnimation(results);
+        }
     }
 
     requestAnimationFrame(animate);
 }
+
 
 
 // レースアニメーション終了後の処理
