@@ -709,3 +709,68 @@ button:hover {
     margin: 0;
     font-weight: bold;
 }
+
+/* =========================
+   スマホ対応
+========================= */
+
+@media (max-width: 600px) {
+
+    /* 馬番選択欄を2列にする */
+    .bet-choice-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+    }
+
+    /* 馬番の選択カード */
+    .bet-choice-list label {
+        min-width: 0;
+        width: 100%;
+        padding: 10px 8px;
+        gap: 6px;
+        justify-content: center;
+    }
+
+    /* チェックボックス */
+    .bet-choice-list input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+    }
+
+    /* 購入画面全体 */
+    main {
+        width: 100%;
+        padding: 0 12px;
+    }
+
+    .bet-panel {
+        padding: 15px;
+        min-width: 0;
+    }
+
+    /* ステータス表示 */
+    .status-panel {
+        gap: 5px;
+        padding: 12px 5px;
+    }
+
+    .status-panel h2 {
+        font-size: 18px;
+    }
+
+    /* 最終結果 */
+    .final-summary {
+        grid-template-columns: 1fr;
+    }
+
+    /* レース情報 */
+    .race-animation-info {
+        font-size: 14px;
+    }
+
+    #race-track {
+        height: 350px;
+    }
+}
