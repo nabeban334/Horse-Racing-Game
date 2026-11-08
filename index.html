@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>架空競馬シミュレーション</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- タイトル画面 -->
+<section id="title-screen">
+    <h1>HORSE RACING GAME</h1>
+    <p>目指せ高額配当！</p>
+
+    <button id="game-start-button" onclick="startGame()">
+        ゲームスタート
+    </button>
+
+</section>
+<div id="game-screen" style="display: none;">
+
+    <header>
+        <h1>HORSE RACING GAME</h1>
+        <p>目指せ高額配当！</p>
+    </header>
+
+    <main>
+
+        <!-- 所持金・レース数 -->
+        <section class="status-panel">
+            <div>
+                <p>所持金</p>
+                <h2 id="money">100,000円</h2>
+            </div>
+            <div>
+                <p>開催レース</p>
+                <h2 id="race-count">第1レース / 12</h2>
+            </div>
+        </section>
+
+        <!-- レース情報 -->
+        <section class="race-panel">
+            <p id="racecourse-name">競馬場名</p>
+            <h2 id="race-name">レース名</h2>
+            <p id="race-info">距離・馬場状態</p>
+        </section>
+
+        <!-- 出走表 -->
+        <section id="race-preparation">
+    <h2>出走表</h2>
+
+            <!-- 出走馬の並び替え -->
+            <div class="sort-control">
+                <label for="horse-sort">出走表の並び順：</label>
+                <select id="horse-sort" onchange="changeHorseSort()">
+                    <option value="number">馬番順</option>
+                    <option value="odds">オッズ順</option>
+                </select>
+            </div>
+
+            <!-- 出走馬一覧 -->
+            <div id="horse-list"></div>
+
+            <!-- 馬券購入 -->
+            <section id="bet-section" class="bet-panel">
+                <h2>馬券購入</h2>
+
+                <label for="bet-type">馬券の種類</label>
+                <select id="bet-type" onchange="updateBetInputs()">
+                    <option value="単勝">単勝</option>
+                    <option value="複勝">複勝</option>
+                    <option value="枠連">枠連</option>
+                    <option value="馬連">馬連</option>
+                    <option value="馬単">馬単</option>
+                    <option value="ワイド">ワイド</option>
+                    <option value="三連複">三連複</option>
+                    <option value="三連単">三連単</option>
+                </select>
+
+                <div class="bet-method-section">
+                    <label for="bet-method">買い方</label>
+                    <select id="bet-method">
+                        <option value="formation" selected>フォーメーション</option>
+                        <option value="box">ボックス</option>
+                        <option value="nagashi">ながし</option>
+                    </select>
+                </div>
+
+                <div id="bet-horse-inputs"></div>
+                <div id="bet-summary">
+                    選択した頭数：0頭
+                </div>
+
+                <div id="bet-odds" class="bet-odds">
+                    オッズ：--
+                </div>
+
+                <label for="bet-amount">1点あたりの購入金額（円）</label>
+                <input
+                type="number"
+                id="bet-amount"
+                min="100"
+                step="100"
+                value="100"
+                oninput="updateBetOddsPreview()"
+                >
+
+                <button onclick="addBet()">
+                    この内容で購入
+                </button>
+
+                <h3>購入予定・購入済み馬券</h3>
+                <div id="bet-list">
+                    まだ馬券を購入していません。
+                </div>
+
+                <div id="money-display-bottom" class="money-display-bottom">
+                    所持金：100,000円
+                </div>
+            </section>
+
+            <!-- レース開始ボタン -->
+            <section class="race-control">
+                <button id="start-button" onclick="startRace()">
+                    レース開始
+                </button>
+            </section>
+
+        </section>
+
+        <!-- レースアニメーション -->
+         <section id="race-animation-section" style="display: none;">
+            
+            <h2>🏇 レース中継</h2>
+            
+            <div class="race-animation-info">
+                <span id="animation-race-name"></span>
+            </div>
+            <div id="race-track">
+                <div class="track-label">GOAL →</div>
+                <div id="animation-horses"></div>
+            </div>
+            <button id="skip-race-button">
+                レース結果へ
+            </button>
+            <div id="animation-ranking">
+                レース開始！
+            </div>
+
+        </section>
+
+        <!-- レース結果 -->
+        <section id="result-section" style="display: none;">
+            <h2>レース結果</h2>
+
+            <div id="result-list"></div>
+
+            <div id="payout-summary"></div>
+
+            <div id="official-payouts"></div>
+
+            <button id="next-button" onclick="nextRace()">
+                次のレースへ
+            </button>
+        </section>
+        
+<!-- 最終結果画面 -->
+<section id="final-result-section" style="display: none;">
+    <h2>🏆 本日の最終結果</h2>
+
+    <div class="final-summary">
+        <div>
+            <p>最終所持金</p>
+            <h2 id="final-money">0円</h2>
+        </div>
+
+        <div>
+            <p>収支</p>
+            <h2 id="final-profit">0円</h2>
+        </div>
+
+        <div>
+            <p>総購入金額</p>
+            <h2 id="final-bet">0円</h2>
+        </div>
+
+        <div>
+            <p>総払戻金額</p>
+            <h2 id="final-payout">0円</h2>
+        </div>
+
+        <div>
+            <p>的中数</p>
+            <h2 id="final-hit">0 / 0</h2>
+        </div>
+
+        <div>
+            <p>回収率</p>
+            <h2 id="final-recovery">0%</h2>
+        </div>
+    </div>
+
+    <h3>お疲れさまでした！</h3>
+    <p>本日の12レースが終了しました。</p>
+    <button onclick="returnToTitle()">
+    タイトルへ戻る
+</button>
+</section>
+
+    
+    </main>
+
+    <footer>
+        <p>HORSE RACING GAME</p>
+    </footer>
+</div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

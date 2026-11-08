@@ -1,0 +1,711 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f1f3f5;
+    color: #222;
+    font-family: sans-serif;
+}
+
+header {
+    background: #173d2b;
+    color: white;
+    text-align: center;
+    padding: 25px 10px;
+}
+
+header h1 {
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+main {
+    max-width: 850px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+
+.status-panel {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.status-panel p {
+    color: #666;
+    margin: 5px;
+}
+
+.status-panel h2 {
+    margin: 5px;
+    color: #17613c;
+}
+
+.race-panel {
+    background: #24583d;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.race-panel h2 {
+    margin: 0 0 10px;
+}
+
+.race-panel p {
+    margin: 0;
+}
+
+.subtext {
+    color: #777;
+    font-size: 14px;
+}
+
+.horse {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 14px;
+    margin-bottom: 9px;
+    border-radius: 8px;
+    border-left: 5px solid #24583d;
+}
+
+.horse-number {
+    font-size: 20px;
+    font-weight: bold;
+    min-width: 35px;
+    text-align: center;
+}
+
+.horse-name {
+    flex: 1;
+    font-weight: bold;
+}
+
+.horse-info {
+    text-align: right;
+    font-size: 14px;
+    color: #555;
+}
+
+.odds {
+    color: #b3261e;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-size: 13px;
+}
+
+@media (max-width: 500px) {
+    .horse {
+        gap: 7px;
+        padding: 11px 8px;
+    }
+
+    .horse-info {
+        font-size: 12px;
+    }
+
+    .odds {
+        font-size: 15px;
+    }
+}
+.race-control {
+    text-align: center;
+    margin: 25px 0;
+}
+
+button {
+    background: #17613c;
+    color: white;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #10452a;
+}
+
+#result-section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 25px;
+}
+
+.result-horse {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    gap: 15px;
+}
+
+.result-rank {
+    font-size: 20px;
+    font-weight: bold;
+    min-width: 40px;
+}
+
+.result-name {
+    flex: 1;
+    font-weight: bold;
+}
+
+#next-button {
+    display: block;
+    margin: 20px auto 0;
+}
+.bet-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 25px 0;
+}
+
+.bet-panel label {
+    display: block;
+    font-weight: bold;
+    margin: 15px 0 7px;
+}
+
+.bet-panel select,
+.bet-panel input {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.bet-horse-select {
+    margin-top: 10px;
+}
+
+.bet-ticket {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.bet-ticket strong {
+    color: #17613c;
+}
+
+.bet-total {
+    text-align: right;
+    font-weight: bold;
+    margin-top: 12px;
+}
+.sort-control {
+    margin: 15px 0;
+}
+
+.sort-control label {
+    font-weight: bold;
+}
+
+.sort-control select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+.bet-odds {
+    margin: 15px 0;
+    padding: 12px;
+    background: #edf5ef;
+    border-radius: 8px;
+    color: #17613c;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+#racecourse-name {
+    font-size: 15px;
+    margin: 0 0 8px;
+    color: #d9eadf;
+    letter-spacing: 1px;
+}
+.horse-distance {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #555;
+    background: #f3f5f3;
+    padding: 8px;
+    border-radius: 6px;
+}
+#payout-summary {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f7f1;
+    border-radius: 10px;
+}
+
+.payout-ticket {
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.payout-total {
+    margin-top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+    color: #17613c;
+}
+.race-control {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+#start-button {
+    width: 100%;
+    max-width: 400px;
+    padding: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.final-summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.final-summary > div {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.final-summary p {
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.final-summary h2 {
+    font-size: 22px;
+    margin: 0;
+}
+
+#final-result-section {
+    background: #f4f7f4;
+    padding: 25px;
+    border-radius: 12px;
+    margin-top: 25px;
+}
+
+@media (max-width: 500px) {
+    .final-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* タイトル画面 */
+#title-screen {
+    min-height: 100vh;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    padding: 30px;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.55)
+        ),
+        url("title-background.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    color: white;
+}
+
+/* タイトル文字 */
+#title-screen h1 {
+    font-size: clamp(32px, 5vw, 60px);
+    margin-bottom: 15px;
+    text-shadow: 2px 3px 6px black;
+}
+
+#title-screen p {
+    font-size: 20px;
+    margin-bottom: 40px;
+    text-shadow: 1px 2px 5px black;
+}
+
+/* ゲームスタートボタン */
+#game-start-button {
+    background: #087849;
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+
+    padding: 18px 55px;
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#game-start-button:hover {
+    background: #0a9b5e;
+    transform: scale(1.05);
+}
+
+/* 全馬券の払戻一覧 */
+#official-payouts {
+    margin-top: 30px;
+    overflow-x: auto;
+}
+
+.official-payout-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 15px;
+}
+
+.official-payout-table th,
+.official-payout-table td {
+    padding: 12px 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.official-payout-table th {
+    background: #087849;
+    color: white;
+}
+
+.official-payout-table tr:nth-child(even) {
+    background: #f2f7f3;
+}
+
+/* 枠番カラー */
+.frame-1 {
+    background-color: #ffffff;
+    color: #222222;
+}
+
+.frame-2 {
+    background-color: #222222;
+    color: #ffffff;
+}
+
+.frame-3 {
+    background-color: #e52525;
+    color: #ffffff;
+}
+
+.frame-4 {
+    background-color: #1769d2;
+    color: #ffffff;
+}
+
+.frame-5 {
+    background-color: #ffe52b;
+    color: #222222;
+}
+
+.frame-6 {
+    background-color: #23833b;
+    color: #ffffff;
+}
+
+.frame-7 {
+    background-color: #ff9d20;
+    color: #222222;
+}
+
+.frame-8 {
+    background-color: #f3b6ce;
+    color: #222222;
+}
+
+/* 枠番表示 */
+.frame-number {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 28px;
+    font-weight: bold;
+    border: 1px solid #777;
+    margin-right: 6px;
+}
+
+/* 枠番 */
+.horse-frame {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border: 1px solid #777;
+    box-sizing: border-box;
+}
+
+/* 馬番 */
+.horse-number {
+    width: 32px;
+    min-width: 32px;
+    text-align: center;
+    font-weight: bold;
+}
+#bet-horse-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+}
+
+#bet-horse-inputs label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+/* 馬券の選択欄 */
+#bet-horse-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin: 15px 0;
+}
+
+/* 各着順のグループ */
+.bet-choice-group h4 {
+    margin-bottom: 8px;
+}
+
+/* 馬番の並び */
+.bet-choice-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+/* 選択肢 */
+.bet-choice-list label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* チェックボックス */
+.bet-choice-list input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+/* 購入馬券一覧の下の所持金表示 */
+.money-display-bottom {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f0f4f0;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+/* レースアニメーション画面 */
+#race-animation-section {
+    margin: 20px 0;
+}
+
+.race-animation-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/* 競馬場 */
+#race-track {
+    position: relative;
+    height: 440px;
+    overflow: hidden;
+    background: repeating-linear-gradient(
+        to bottom,
+        #278b43 0px,
+        #278b43 35px,
+        #217b3a 35px,
+        #217b3a 70px
+    );
+    border: 4px solid #654321;
+    border-radius: 8px;
+}
+
+/* ゴールライン */
+.track-label {
+    position: absolute;
+    right: 15px;
+    top: 0;
+    height: 100%;
+    writing-mode: vertical-rl;
+    background: repeating-linear-gradient(
+        to bottom,
+        white 0px,
+        white 10px,
+        black 10px,
+        black 20px
+    );
+    color: red;
+    font-weight: bold;
+    z-index: 2;
+}
+
+/* 馬の表示エリア */
+#animation-horses {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.animated-horse {
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+    font-size: 18px;
+    font-weight: bold;
+    height: 25px;
+}
+
+.animated-horse .horse-number {
+    position: absolute;
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    font-size: 14px;
+    z-index: 3;
+}
+
+.animated-horse .horse-icon {
+    position: absolute;
+    left: 35px;
+    display: inline-block;
+    transform: scaleX(-1);
+    animation: none;
+}
+
+/* 走る動き */
+.animated-horse .horse-icon {
+    display: inline-block;
+    transform: scaleX(-1);
+    animation: none;
+}
+
+/* 順位表示 */
+#animation-ranking {
+    margin-top: 15px;
+    padding: 12px;
+    background: #f3f3f3;
+    border-radius: 8px;
+    font-weight: bold;
+    line-height: 1.8;
+}
+/* マルチのチェックボックス */
+.bet-multi-option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: flex-start;
+    width: 100%;
+    gap: 10px;
+    margin: 12px 0;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* チェックボックスのサイズ */
+.bet-multi-option input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+/* 馬券購入欄のオッズ */
+.bet-choice-odds {
+    color: #e53935;
+    font-weight: bold;
+    margin-left: 6px;
+}
+/* レース結果画面では上部の所持金を隠す */
+.hide-money #money {
+    display: none;
+}
+/* 大波乱イベントの特別表示 */
+.big-upset-banner {
+    background: linear-gradient(135deg, #8b0000, #e53935);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(229, 57, 53, 0.5);
+}
+
+.big-upset-banner h2 {
+    margin: 0 0 10px;
+    font-size: 1.8rem;
+}
+
+.big-upset-banner p {
+    margin: 0;
+    font-weight: bold;
+}
