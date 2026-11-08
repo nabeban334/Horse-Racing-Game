@@ -772,3 +772,57 @@ button:hover {
         padding: 12px;
     }
 }
+/* スマホ版：出走表 */
+@media screen and (max-width: 600px) {
+
+    .horse {
+        display: grid;
+        grid-template-columns: 30px 30px minmax(0, 1fr) auto;
+        gap: 6px;
+        align-items: center;
+        width: 100%;
+        padding: 10px 6px;
+    }
+
+    .horse-frame {
+        width: 28px;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .horse-number {
+        width: 30px;
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .horse-name {
+        min-width: 0;
+        font-size: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .horse-name .horse-info {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    /* 人気・オッズ */
+    .horse > .horse-info {
+        font-size: 11px;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .odds {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    /* 距離適性は次の行に表示 */
+    .horse-distance {
+        grid-column: 3 / 5;
+        font-size: 11px;
+        margin-top: 2px;
+    }
+}
