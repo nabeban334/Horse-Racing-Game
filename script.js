@@ -1336,7 +1336,7 @@ function drawWeightedHorse(horses) {
     const weights = horses.map(horse => ({
         horse: horse,
         weight: Math.exp(
-            (calculateRaceAbility(horse) - 80) / 12
+            (calculateRaceAbility(horse) - 80) / 10
         )
     }));
 
