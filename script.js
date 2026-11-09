@@ -531,31 +531,29 @@ function calculateFrameNumber(horseNumber, horseCount) {
     return null;
 }
 
-// 大波乱レースの特別オッズを計算
 function calculateUpsetOdds(type, numbers) {
 
-    // それぞれの馬券の最低・最高オッズ
     const oddsRanges = {
-        "単勝": [1000, 10000],
-        "複勝": [300, 3000],
-        "ワイド": [1000, 20000],
-        "枠連": [3000, 20000],
-        "馬連": [5000, 30000],
-        "馬単": [10000, 50000],
-        "三連複": [10000, 50000],
-        "三連単": [80000, 120000]
+        "単勝": [1000, 600],
+        "複勝": [50, 200],
+        "ワイド": [800, 2000],
+        "枠連": [500, 1500],
+        "馬連": [1000, 8000],
+        "馬単": [8000, 18000],
+
+        // 100円あたりの最大払戻金からオッズを設定
+        "三連複": [10000, 80000],
+        "三連単": [75000, 150000]
     };
 
     const range = oddsRanges[type];
 
     if (!range) {
-        return 9999.9;
+        return calculateBetOdds(type, numbers);
     }
 
-    // 通常の計算による想定オッズ
     const normalOdds = calculateBetOdds(type, numbers);
 
-    // 想定オッズが高いほど特別オッズも高くする
     const score = Math.max(
         0,
         Math.min(
@@ -1336,7 +1334,7 @@ function drawWeightedHorse(horses) {
     const weights = horses.map(horse => ({
         horse: horse,
         weight: Math.exp(
-            (calculateRaceAbility(horse) - 80) / 10
+            (calculateRaceAbility(horse) - 80) / 5
         )
     }));
 
@@ -1762,7 +1760,6 @@ function startRaceAnimation(results) {
             const element = document.createElement("div");
             element.className = "animated-horse";
 
-            // 馬の表示幅を固定
             element.style.width = "70px";
 
             const frameColors = {
@@ -1804,9 +1801,9 @@ function startRaceAnimation(results) {
 
             element.style.top = `${topPosition}px`;
 
-            // 着順に応じたゴール時間
+            // 実際の着順に応じてゴール時間を設定
             const finishTime =
-                15800 + resultIndex * 120;
+                14000 + resultIndex * 180;
 
             return {
                 horse: horse,
@@ -1820,48 +1817,20 @@ function startRaceAnimation(results) {
     // アニメーションを更新
     function animate(now) {
 
+        if (animationFinished) return;
+
         const elapsed = Math.min(
             now - startTime,
             duration
         );
 
-        const progress = elapsed / duration;
-
+        // 馬ごとの位置を更新
         animationHorses.forEach(item => {
 
-            const horse = item.horse;
-
-            // 馬ごとの進行度
-            let p = Math.min(
+            // 実際の着順に従って進行度を計算
+            const p = Math.min(
                 elapsed / item.finishTime,
                 1
-            );
-
-            // 脚質による動きの補正
-            let styleBonus = 0;
-
-            if (horse.style === "逃げ") {
-                styleBonus =
-                    0.07 * Math.sin(Math.PI * progress);
-
-            } else if (horse.style === "先行") {
-                styleBonus =
-                    0.035 * Math.sin(Math.PI * progress);
-
-            } else if (horse.style === "差し") {
-                styleBonus =
-                    0.035 * Math.sin(Math.PI * progress)
-                    * (2 * progress - 0.5);
-
-            } else if (horse.style === "追込") {
-                styleBonus =
-                    0.07 * Math.sin(Math.PI * progress)
-                    * (2 * progress - 1);
-            }
-
-            p = Math.max(
-                0,
-                Math.min(1, p + styleBonus)
             );
 
             // 馬の幅を考慮して横位置を計算
@@ -1882,13 +1851,18 @@ function startRaceAnimation(results) {
         // 現在の位置順に並べる
         const liveRanking = [...animationHorses].sort(
             (a, b) => {
+
                 const aPosition =
                     parseFloat(a.element.style.left);
 
                 const bPosition =
                     parseFloat(b.element.style.left);
 
-                return bPosition - aPosition;
+                // 同じ位置なら実際の着順を優先
+                return (
+                    bPosition - aPosition ||
+                    a.resultIndex - b.resultIndex
+                );
             }
         );
 
@@ -1901,10 +1875,10 @@ function startRaceAnimation(results) {
                 .join("　");
 
         // 18秒経過したら終了
-        if (elapsed < duration && !animationFinished) {
+        if (elapsed < duration) {
             requestAnimationFrame(animate);
 
-        } else if (!animationFinished) {
+        } else {
             animationFinished = true;
             finishRaceAnimation(results);
         }
@@ -1912,8 +1886,6 @@ function startRaceAnimation(results) {
 
     requestAnimationFrame(animate);
 }
-
-
 
 // レースアニメーション終了後の処理
 function finishRaceAnimation(results) {
@@ -1933,12 +1905,6 @@ function finishRaceAnimation(results) {
     // レース結果画面では上部の所持金を隠す
     document.querySelector(".status-panel").classList.add("hide-money");
 
-    // 所持金が100円未満ならゲーム終了
-    if (money < 100) {
-        showFinalResult();
-        return;
-    }
-
     // 結果画面を表示
     document.getElementById("result-section").style.display =
         "block";
@@ -1949,12 +1915,17 @@ function finishRaceAnimation(results) {
     const nextButton =
         document.getElementById("next-button");
 
-    if (currentRace === TOTAL_RACES) {
+    // 所持金が100円以下、または最終レースなら最終結果へ
+    if (money <= 100 || currentRace === TOTAL_RACES) {
+
         nextButton.textContent = "最終結果を見る";
         nextButton.onclick = showFinalResult;
+
     } else {
+
         nextButton.textContent = "次のレースへ";
         nextButton.onclick = nextRace;
+
     }
 }
 
@@ -2405,33 +2376,3 @@ document.addEventListener("click", function(event) {
         playButtonSound();
     }
 });
-
-// 出走表のスマホスクロールを制御
-const horseScroll = document.querySelector(".horse-list-scroll");
-
-if (horseScroll) {
-    let startY = 0;
-
-    horseScroll.addEventListener("touchstart", function(e) {
-        startY = e.touches[0].clientY;
-    }, { passive: true });
-
-    horseScroll.addEventListener("touchmove", function(e) {
-        const currentY = e.touches[0].clientY;
-        const deltaY = startY - currentY;
-
-        const atTop = horseScroll.scrollTop <= 0;
-        const atBottom =
-            horseScroll.scrollTop + horseScroll.clientHeight >=
-            horseScroll.scrollHeight;
-
-        if (
-            (atTop && deltaY < 0) ||
-            (atBottom && deltaY > 0)
-        ) {
-            e.preventDefault();
-        }
-
-        startY = currentY;
-    }, { passive: false });
-}
