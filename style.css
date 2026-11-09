@@ -924,3 +924,30 @@ button:hover {
         color: #e53935;
     }
 }
+/* 出走表だけをスクロール可能にする */
+.horse-list-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 5px;
+    margin-bottom: 15px;
+
+    /* スマホでもスクロールしやすくする */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* スクロールバーの見た目 */
+.horse-list-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.horse-list-scroll::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 10px;
+}
+
+.horse-list-scroll::-webkit-scrollbar-track {
+    background: #eee;
+}
