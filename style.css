@@ -928,7 +928,7 @@ button:hover {
 .horse-list-scroll {
     height: 400px;
     max-height: 50vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 
     border: 1px solid #ccc;
@@ -936,10 +936,10 @@ button:hover {
     padding: 5px;
     margin-bottom: 15px;
 
-    /* スマホ対応 */
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
-    overscroll-behavior: contain;
+    overscroll-behavior-y: contain;
+    position: relative;
 }
 
 /* スクロールバー */

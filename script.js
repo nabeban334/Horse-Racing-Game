@@ -2405,3 +2405,33 @@ document.addEventListener("click", function(event) {
         playButtonSound();
     }
 });
+
+// 出走表のスマホスクロールを制御
+const horseScroll = document.querySelector(".horse-list-scroll");
+
+if (horseScroll) {
+    let startY = 0;
+
+    horseScroll.addEventListener("touchstart", function(e) {
+        startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    horseScroll.addEventListener("touchmove", function(e) {
+        const currentY = e.touches[0].clientY;
+        const deltaY = startY - currentY;
+
+        const atTop = horseScroll.scrollTop <= 0;
+        const atBottom =
+            horseScroll.scrollTop + horseScroll.clientHeight >=
+            horseScroll.scrollHeight;
+
+        if (
+            (atTop && deltaY < 0) ||
+            (atBottom && deltaY > 0)
+        ) {
+            e.preventDefault();
+        }
+
+        startY = currentY;
+    }, { passive: false });
+}
