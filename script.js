@@ -1388,26 +1388,21 @@ function simulateFinishOrder(horses, isBigUpset = false) {
     }
 
     // 大波乱レース
-    // オッズが高い順に並べる
+    // 単勝オッズが高い順（人気が低い順）に並べる
     const sortedByOdds = [...horses].sort(
         (a, b) => b.odds - a.odds
     );
 
-    // 上位40%程度の人気薄を候補にする
-    const outsiderCount = Math.min(
-        horses.length,
-        Math.max(3, Math.ceil(horses.length * 0.4))
-    );
-
+    // 人気下位5頭を候補にする
     const outsiderPool = sortedByOdds.slice(
         0,
-        outsiderCount
+        Math.min(5, horses.length)
     );
 
     const remainingOutsiders = [...outsiderPool];
     const results = [];
 
-    // 人気薄から上位3頭を抽選
+    // 人気下位5頭から3頭を抽選
     while (
         results.length < 3 &&
         remainingOutsiders.length > 0
@@ -1425,7 +1420,7 @@ function simulateFinishOrder(horses, isBigUpset = false) {
         remainingOutsiders.splice(index, 1);
     }
 
-    // 残りの馬を通常どおり抽選
+    // 4着以下は残りの全出走馬から通常どおり抽選
     const selectedNumbers = new Set(
         results.map(horse => horse.number)
     );
@@ -1822,7 +1817,7 @@ function startRace() {
     raceStarted = true;
 
     // 1%の確率で大波乱イベント発生
-    isBigUpsetRace = Math.random() < 0.01;
+    isBigUpsetRace = Math.random() < 0.03;
     //isBigUpsetRace = true
 
     // 着順を最初に決定しておく
