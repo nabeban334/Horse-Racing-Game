@@ -924,10 +924,11 @@ button:hover {
         color: #e53935;
     }
 }
+
 /* 出走表だけをスクロール可能にする */
 .horse-list-scroll {
-    height: 400px;
-    max-height: 50vh;
+    height: 650px;
+    max-height: 80vh;
     overflow-y: auto;
     overflow-x: hidden;
 
@@ -941,6 +942,7 @@ button:hover {
     overscroll-behavior-y: contain;
     position: relative;
 }
+
 
 /* スクロールバー */
 .horse-list-scroll::-webkit-scrollbar {
