@@ -334,7 +334,9 @@ function calculateOdds(horses) {
 function calculateOrderProbability(numbers) {
     const weights = currentHorses.map(horse => ({
         number: horse.number,
-        weight: Math.exp((horse.ability - 80) / 8)
+        weight: Math.exp(
+            (calculateRaceAbility(horse) - 80) / 8
+        )
     }));
 
     let remainingWeight = weights.reduce(
