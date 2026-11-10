@@ -670,14 +670,14 @@ function updateBetInputs() {
 
     // 単勝・複勝は買い方の欄を非表示にする
     const methodSection = document.querySelector(
-        ".bet-method-section"
+     ".bet-method-section"
     );
     
     if (type === "単勝" || type === "複勝") {
         methodSelect.value = "formation";
-        methodSection.style.display = "none";
+        methodSection.hidden = true;
     } else {
-        methodSection.style.display = "block";
+        methodSection.hidden = false;
     }
 
     const currentMethod = methodSelect.value;

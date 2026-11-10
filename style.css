@@ -955,3 +955,7 @@ button:hover {
 .horse-list-scroll::-webkit-scrollbar-track {
     background: #eee;
 }
+/* 単勝・複勝では買い方欄を非表示 */
+.bet-method-section[hidden] {
+    display: none !important;
+}
