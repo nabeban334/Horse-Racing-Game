@@ -668,9 +668,16 @@ function updateBetInputs() {
 
     container.innerHTML = "";
 
-    // 単勝・複勝はフォーメーションのみ
+    // 単勝・複勝は買い方の欄を非表示にする
+    const methodSection = document.querySelector(
+        ".bet-method-section"
+    );
+    
     if (type === "単勝" || type === "複勝") {
         methodSelect.value = "formation";
+        methodSection.style.display = "none";
+    } else {
+        methodSection.style.display = "block";
     }
 
     const currentMethod = methodSelect.value;
@@ -1442,30 +1449,25 @@ function simulateFinishOrder(horses, isBigUpset = false) {
 
 // 馬券を購入する
 function addBet() {
-
-    // レース開始後は購入できない
     if (raceStarted) {
         alert("レース開始後は購入できません。");
         return;
     }
 
     const type = document.getElementById("bet-type").value;
+    const method = document.getElementById("bet-method").value;
 
-    // 買い目を生成
     const combinations = generateBetCombinations();
 
-    // 買い目がない場合
     if (combinations.length === 0) {
         alert("馬番を選択してください。");
         return;
     }
 
-    // 1点あたりの購入金額
     const amount = Number(
         document.getElementById("bet-amount").value
     );
 
-    // 金額の確認
     if (
         !Number.isInteger(amount) ||
         amount < 100 ||
@@ -1475,10 +1477,8 @@ function addBet() {
         return;
     }
 
-    // 合計購入金額
     const totalAmount = combinations.length * amount;
 
-    // 所持金の確認
     if (totalAmount > money) {
         alert(
             `所持金が足りません。\n` +
@@ -1488,9 +1488,59 @@ function addBet() {
         return;
     }
 
-    // それぞれの買い目を登録
-    combinations.forEach(numbers => {
+    // 選択した馬番をグループごとに保存
+    const groups = [
+        ...document.querySelectorAll(".bet-choice-group")
+    ];
 
+    const selectedGroups = groups.map(group =>
+        [...group.querySelectorAll(".bet-choice:checked")]
+            .map(checkbox => Number(checkbox.value))
+    );
+
+    // グループ名を保存
+    const groupLabels = groups.map(group =>
+        group.querySelector("h4").textContent
+    );
+
+    // ながしの固定位置を保存
+    let patternLabel = "";
+
+    if (method === "nagashi") {
+        const pattern = document.getElementById(
+            "bet-nagashi-pattern"
+        );
+
+        if (pattern) {
+            patternLabel =
+                pattern.options[pattern.selectedIndex].textContent;
+        }
+    }
+
+    // マルチが選択されているか
+    const multiCheckbox = document.getElementById(
+        "bet-nagashi-multi"
+    );
+
+    const isMulti =
+        method === "nagashi" &&
+        multiCheckbox &&
+        multiCheckbox.checked;
+
+    // 購入操作ごとに識別番号を付ける
+    const purchaseId = Date.now() + Math.random();
+
+    // 購入内容を保存
+    const purchaseInfo = {
+        method: method,
+        patternLabel: patternLabel,
+        isMulti: isMulti,
+        selectedGroups: selectedGroups,
+        groupLabels: groupLabels
+    };
+
+    // 従来どおり、買い目は1点ずつ保存する
+    combinations.forEach(numbers => {
         const odds = Math.round(
             calculateBetOdds(type, numbers) * 10
         ) / 10;
@@ -1499,26 +1549,63 @@ function addBet() {
             type: type,
             numbers: numbers,
             amount: amount,
-            odds: odds
+            odds: odds,
+
+            // 追加情報
+            purchaseId: purchaseId,
+            purchaseInfo: purchaseInfo
         });
     });
 
-    // 所持金から合計購入金額を引く
     money -= totalAmount;
-
-    // 1日の購入金額に加算
     totalBetAmount += totalAmount;
 
-    // 所持金表示を更新
     updateMoneyDisplay();
-
-    // 購入馬券一覧を更新
     displayBets();
 
-    // 購入金額を初期値に戻す
     document.getElementById("bet-amount").value = 100;
 
     updateBetOddsPreview();
+}
+
+// 購入内容をコンパクトな文字列にする
+function formatBetPurchaseInfo(info, type) {
+    if (!info) {
+        return "";
+    }
+
+    const unit = type === "枠連" ? "枠" : "";
+
+    const groupTexts = info.selectedGroups
+        .filter(group => group.length > 0)
+        .map(group =>
+            group.map(number => `${number}${unit}`).join("・")
+        );
+
+    const numberText = groupTexts.join("－");
+
+    const methodNames = {
+        formation: "フォーメーション",
+        box: "ボックス",
+        nagashi: "ながし"
+    };
+
+    const methodText =
+        methodNames[info.method] || "";
+
+    const patternText = info.patternLabel
+        ? `　${info.patternLabel}`
+        : "";
+
+    const multiText = info.isMulti
+        ? "　マルチ"
+        : "";
+
+    return {
+        heading:
+            `${type}　${methodText}${patternText}${multiText}`,
+        numbers: numberText
+    };
 }
 
 // 所持金の表示を更新する
@@ -1526,18 +1613,20 @@ function updateMoneyDisplay() {
     const moneyText =
         `${money.toLocaleString("ja-JP")}円`;
 
-    const topDisplay =
-        document.getElementById("money");
+    // 画面上部の所持金
+    const topMoney = document.getElementById("money");
 
-    const bottomDisplay =
-        document.getElementById("money-display-bottom");
-
-    if (topDisplay) {
-        topDisplay.textContent = moneyText;
+    if (topMoney) {
+        topMoney.textContent = moneyText;
     }
 
-    if (bottomDisplay) {
-        bottomDisplay.textContent = `所持金：${moneyText}`;
+    // 購入馬券一覧の下部の所持金
+    const bottomMoney =
+        document.getElementById("money-display-bottom");
+
+    if (bottomMoney) {
+        bottomMoney.textContent =
+            `所持金：${moneyText}`;
     }
 }
 
@@ -1554,33 +1643,97 @@ function displayBets() {
 
     let total = 0;
 
+    // 購入操作ごとにグループ分け
+    const purchaseGroups = new Map();
+
     currentBets.forEach((bet, index) => {
+        const key =
+            bet.purchaseId !== undefined
+                ? bet.purchaseId
+                : `old-${index}`;
+
+        if (!purchaseGroups.has(key)) {
+            purchaseGroups.set(key, []);
+        }
+
+        purchaseGroups.get(key).push(bet);
+
         total += bet.amount;
+    });
+
+    let purchaseNumber = 1;
+
+    // 購入操作ごとに表示
+    purchaseGroups.forEach(bets => {
+        const firstBet = bets[0];
 
         const div = document.createElement("div");
         div.className = "bet-ticket";
 
-        const numberLabel = bet.type === "枠連" ? "枠" : "番";
-        
-        const separator =
-        bet.type === "馬単" || bet.type === "三連単"
-        ? " → "
-        : " - ";
-        
-        const orderText = bet.numbers
-        .map(number => `${number}${numberLabel}`)
-        .join(separator);
+        const pointCount = bets.length;
+        const amountPerPoint = firstBet.amount;
+        const groupTotal = pointCount * amountPerPoint;
 
-        div.textContent =
-    `${index + 1}. ${bet.type}：${orderText} / ` +
-    `${bet.amount.toLocaleString("ja-JP")}円 / ` +
-    `想定 ${bet.odds.toFixed(1)}倍`;
+        // 購入内容の表示
+        if (firstBet.purchaseInfo) {
+
+            const formatted = formatBetPurchaseInfo(
+                firstBet.purchaseInfo,
+                firstBet.type
+            );
+
+            // 単勝・複勝は購入方法を表示しない
+            const heading =
+                firstBet.type === "単勝" ||
+                firstBet.type === "複勝"
+                    ? firstBet.type
+                    : formatted.heading;
+
+            div.innerHTML = `
+                <div>
+                    ${purchaseNumber}. ${heading}
+                </div>
+                <div>
+                    ${formatted.numbers}
+                </div>
+                <div>
+                    ${pointCount}点 ×
+                    ${amountPerPoint.toLocaleString("ja-JP")}円
+                    ＝
+                    ${groupTotal.toLocaleString("ja-JP")}円
+                </div>
+            `;
+
+        } else {
+            // 以前の形式で保存された馬券への対応
+            const numberLabel =
+                firstBet.type === "枠連" ? "枠" : "番";
+
+            const separator =
+                firstBet.type === "馬単" ||
+                firstBet.type === "三連単"
+                    ? " → "
+                    : " - ";
+
+            const orderText = firstBet.numbers
+                .map(number => `${number}${numberLabel}`)
+                .join(separator);
+
+            div.textContent =
+                `${purchaseNumber}. ${firstBet.type}：${orderText} / ` +
+                `${firstBet.amount.toLocaleString("ja-JP")}円`;
+        }
 
         list.appendChild(div);
+
+        purchaseNumber++;
     });
 
+    // 購入合計
     const totalDiv = document.createElement("div");
+
     totalDiv.className = "bet-total";
+
     totalDiv.textContent =
         `購入合計：${total.toLocaleString("ja-JP")}円`;
 
@@ -2033,6 +2186,7 @@ function displayPayouts(resultOrder) {
         document.getElementById("payout-summary");
 
     let totalPayout = 0;
+    let hitCount = 0;
 
     let html = "";
 
@@ -2059,32 +2213,47 @@ function displayPayouts(resultOrder) {
             resultOrder
         );
 
-        totalPayout += result.payout;
-
+        // 購入枚数の集計
         totalTicketCount++;
 
         if (result.hit) {
             totalHitCount++;
+            hitCount++;
+
+            totalPayout += result.payout;
+
+            const selectionLabel =
+                bet.type === "枠連"
+                    ? `${bet.numbers.join(" - ")}枠`
+                    : `${bet.numbers.join(" - ")}番`;
+
+            // 的中した馬券だけ表示
+            html += `
+                <div class="payout-ticket">
+                    <strong>${bet.type}</strong>
+                    ${selectionLabel}<br>
+                    購入金額：
+                    ${bet.amount.toLocaleString()}円<br>
+                    オッズ：
+                    ${result.odds.toFixed(1)}倍<br>
+                    <strong>
+                        的中！
+                        払戻額：
+                        ${result.payout.toLocaleString()}円
+                    </strong>
+                </div>
+            `;
         }
-
-        const selectionLabel =
-            bet.type === "枠連"
-                ? `${bet.numbers.join(" - ")}枠`
-                : `${bet.numbers.join(" - ")}番`;
-
-        html += `
-            <div class="payout-ticket">
-                <strong>${bet.type}</strong>
-                ${selectionLabel}<br>
-                購入金額：${bet.amount.toLocaleString()}円<br>
-                オッズ：${result.odds.toFixed(1)}倍<br>
-                <strong>
-                    ${result.hit ? "的中！" : "ハズレ"}
-                    払戻額：${result.payout.toLocaleString()}円
-                </strong>
-            </div>
-        `;
     });
+
+    // 的中がなかった場合
+    if (hitCount === 0 && currentBets.length > 0) {
+        html += `
+            <p class="no-hit-message">
+                的中した馬券はありません。
+            </p>
+        `;
+    }
 
     html += `
         <div class="payout-total">
@@ -2095,6 +2264,7 @@ function displayPayouts(resultOrder) {
 
     payoutSummary.innerHTML = html;
 
+    // 払戻金を所持金に加算
     totalPayoutAmount += totalPayout;
     money += totalPayout;
 
