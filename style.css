@@ -961,3 +961,30 @@ button:hover {
 .bet-method-section[hidden] {
     display: none !important;
 }
+
+
+/* 払戻額と収支を横並びにする */
+.payout-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 収支の色分け */
+.payout-profit {
+    font-weight: bold;
+}
+
+.payout-profit.positive {
+    color: #17613c;
+}
+
+.payout-profit.negative {
+    color: #b3261e;
+}
+
+.payout-profit.zero {
+    color: #555;
+}

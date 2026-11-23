@@ -2176,6 +2176,7 @@ function calculateTicketPayout(bet, resultOrder) {
     return { hit, payout, odds };
 }
 
+
 // 払戻結果を表示
 function displayPayouts(resultOrder) {
 
@@ -2183,6 +2184,7 @@ function displayPayouts(resultOrder) {
         document.getElementById("payout-summary");
 
     let totalPayout = 0;
+    let totalBet = 0;
     let hitCount = 0;
 
     let html = "";
@@ -2210,8 +2212,9 @@ function displayPayouts(resultOrder) {
             resultOrder
         );
 
-        // 購入枚数の集計
+        // 購入金額の集計
         totalTicketCount++;
+        totalBet += bet.amount;
 
         if (result.hit) {
             totalHitCount++;
@@ -2252,10 +2255,33 @@ function displayPayouts(resultOrder) {
         `;
     }
 
+    // 収支を計算
+    const profit = totalPayout - totalBet;
+
+    const profitText =
+        profit > 0
+            ? `＋${profit.toLocaleString()}円`
+            : profit < 0
+                ? `－${Math.abs(profit).toLocaleString()}円`
+                : "±0円";
+
+    const profitClass =
+        profit > 0
+            ? "positive"
+            : profit < 0
+                ? "negative"
+                : "zero";
+
+    // 合計払戻額と収支を表示
     html += `
         <div class="payout-total">
-            合計払戻額：
-            ${totalPayout.toLocaleString()}円
+            <span>
+                合計払戻額：
+                ${totalPayout.toLocaleString()}円
+            </span>
+            <span class="payout-profit ${profitClass}">
+                収支：${profitText}
+            </span>
         </div>
     `;
 
